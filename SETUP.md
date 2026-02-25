@@ -19,11 +19,11 @@ apache-airflow-providers-snowflake
 ```
 
 ## Running Airflow in Docker
+4 steps below are to setup docker-compose.yml file. (I'm arealdy setup the correct docker-compose.yml file so you don't have to do it)
 - Docs: https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html
 - Download docker-compose.yaml template: **curl.exe -LfO 'https://airflow.apache.org/docs/apache-airflow/3.1.6/docker-compose.yaml'**
 - Update the .yaml file same as one in the project, and add Dockerfile also.
-
-Add airflow-webserver to docker .yaml 
+- Add airflow-webserver to docker .yaml 
 ```
 airflow-webserver:
     <<: *airflow-common
@@ -41,7 +41,6 @@ airflow-webserver:
       airflow-init:
         condition: service_completed_successfully
 ```
-
 Create default directories and .evn
 - mkdir dags, logs, plugins, config
 - Set-Content .env "AIRFLOW_UID=50000"
@@ -56,7 +55,7 @@ Run airflow
 
 ## Minio S3 setup
 - mkdir minio/data
-Add the MinIO config to docker .yaml
+Add the MinIO config to docker .yaml (I'm arealdy setup the correct docker-compose.yml file so you don't have to do it)
 ```
   minio:
     image: quay.io/minio/minio
@@ -86,16 +85,16 @@ Add Minio connection to Airflow:
 }
 
 ## Snowflake setup
-- You need to create your Snowflake account and add these information to .env. The code below is just for example, update it to your correct account.
+- You need to create your Snowflake account and add these information to your **.env** file. The code below is just for example, update it to your correct account.
 ```
 SNOWFLAKE_ACCOUNT=HXWHSMH-EH06866 -- Update this
 SNOWFLAKE_USER=ImaginysLight -- Update this
 SNOWFLAKE_PASSWORD=password -- Update this
-SNOWFLAKE_ROLE=DATA_ENGINEER
-SNOWFLAKE_WAREHOUSE=DEMO_WH
+SNOWFLAKE_ROLE=DATA_ENGINEER -- Keep this
+SNOWFLAKE_WAREHOUSE=DEMO_WH -- Keep this
 ```
 
-- Folder "snowflake_init_scripts" contains sql scripts that need to run directly on Snowflake website.
+- Folder **snowflake_init_scripts** contains sql scripts that need to run directly on Snowflake website.
 - Run **snowflake_init_scripts/warehouse_init.sql** then **snowflake_init_scripts/bronze_init.sql** to create a DEMO_WH and DEMO_DE_PROJECT_DB with all schema and table for Bronze layer. 
 - Remember to change the last line in **snowflake_init_scripts/warehouse_init.sql** to your user name
 ```
@@ -189,4 +188,3 @@ GRANT ROLE DATA_ENGINEER TO USER ImaginysLight; -- Change ImaginysLight to your 
 - And with the 2 aggregate tables, we can easily get some basic statistic like this
 
 ![Power BI Dashboard](images/power_bi_dashboard.png)
-
