@@ -1,0 +1,5 @@
+pandas
+apache-airflow-providers-amazon
+faker 
+boto3
+apache-airflow-providers-snowflake

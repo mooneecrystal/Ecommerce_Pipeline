@@ -1,0 +1,114 @@
+version: 2
+
+models:
+  - name: dim_date
+    description: "Gold layer date dimension containing daily granularity and fiscal calendar metrics."
+    columns:
+      - name: date_key
+        description: "Primary key for the date dimension (Format: YYYYMMDD). Includes -1 for MISSING/UNKNOWN dates."
+        tests:
+          - unique
+          - not_null
+      - name: date_actual
+        description: "The actual date value."
+        tests:
+          - unique
+          - not_null
+      - name: is_weekend
+        description: "Boolean flag indicating if the date falls on a weekend."
+        tests:
+          - not_null
+
+  - name: dim_products
+    description: "Gold layer product dimension with SCD Type 2 history."
+    columns:
+      - name: product_pk
+        description: "Surrogate Key (MD5 hash of product_id and valid_from). Unique for every version of a product."
+        tests:
+          - unique
+          - not_null
+      - name: product_id
+        description: "Natural key from the source system. Note: Not tested for uniqueness due to SCD Type 2 history."
+        tests:
+          - not_null
+      - name: is_current_record
+        description: "Boolean flag indicating the latest version of the product."
+        tests:
+          - not_null
+
+  - name: dim_customers
+    description: "Gold layer customer dimension with SCD Type 2 history."
+    columns:
+      - name: customer_pk
+        description: "Surrogate Key (MD5 hash of customer_id and valid_from). Unique for every version of a customer."
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        description: "Natural key from the source system. Note: Not tested for uniqueness due to SCD Type 2 history."
+        tests:
+          - not_null
+      - name: email
+        description: "Customer email address."
+      - name: is_current_record
+        description: "Boolean flag indicating the latest version of the customer address/info."
+        tests:
+          - not_null
+
+  - name: fact_sales
+    description: "Gold layer incremental fact table recording individual order items."
+    columns:
+      - name: sales_pk
+        description: "Primary key for the sales fact (MD5 hash of order_id and item index)."
+        tests:
+          - unique
+          - not_null
+      - name: order_id
+        description: "Natural key grouping items from the same transaction."
+        tests:
+          - not_null
+      
+      # Foreign Key Relationship Tests
+      - name: customer_pk
+        description: "Foreign key to dim_customers (SCD version at time of order)."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customers')
+              field: customer_pk
+              # Note: If your fact table coalesces missing customers to '-1', 
+              # you must ensure '-1' exists in dim_customers to pass this test.
+
+      - name: product_pk
+        description: "Foreign key to dim_products (SCD version at time of order)."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_products')
+              field: product_pk
+
+      - name: order_date_key
+        description: "Foreign key to dim_date based on when the order was placed."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_key
+
+      # Degenerate Dimension Tests
+      - name: order_status
+        description: "Status of the order at the time of loading."
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['PENDING', 'CANCELLED', 'COMPLETED', 'UNKNOWN']
+
+      # Measure Checks
+      - name: quantity
+        description: "Number of units purchased for this item."
+        tests:
+          - not_null
+      - name: total_price
+        description: "Total gross price for this line item."
+        tests:
+          - not_null

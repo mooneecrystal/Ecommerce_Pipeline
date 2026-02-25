@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  - name: internal_app
+    database: DEMO_DE_PROJECT_DB
+    schema: BRONZE
+    description: "Raw data ingested from S3. Contains duplicates and potential formatting errors."
+    tables:
+      - name: customers
+      - name: products
+      - name: orders
+      - name: order_items
+

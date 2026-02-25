@@ -1,0 +1,54 @@
+# =========================
+# 1. Credentials & Secrets
+# =========================
+.env
+*.pem
+*.key
+
+# =========================
+# 2. Virtual Environments
+# =========================
+venv/
+env/
+.venv/
+
+# =========================
+# 3. Local Data & Storage
+# =========================
+minio/
+*.csv
+*.json
+*.parquet
+
+# =========================
+# 4. dbt (Data Build Tool)
+# =========================
+# Ignore compiled SQL and downloaded packages
+target/
+dbt_packages/
+dbt_modules/
+
+# =========================
+# 5. Airflow & Logs
+# =========================
+logs/
+airflow.db
+airflow-webserver.pid
+airflow.cfg
+webserver_config.py
+
+# =========================
+# 6. Python & Jupyter
+# =========================
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+ivy_cache/
+.pytest_cache/
+
+# =========================
+# 7. OS & IDE
+# =========================
+.DS_Store
+.vscode/
+.idea/

@@ -1,0 +1,76 @@
+version: 2
+
+models:
+  # --- CUSTOMERS ---
+  - name: stg_customers
+    columns:
+      - name: customer_id
+        tests:
+          - unique
+          - not_null
+
+  # --- PRODUCTS ---
+  - name: stg_products
+    columns:
+      - name: product_id
+        tests:
+          - unique
+          - not_null
+      - name: unit_price
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0" 
+
+  # --- ORDERS ---
+  - name: stg_orders
+    columns:
+      - name: order_id
+        tests:
+          - unique
+          - not_null
+      - name: order_status
+        tests:
+          - accepted_values:
+              values: ['COMPLETED', 'PENDING', 'CANCELLED', 'UNKNOWN']
+      - name: customer_id
+        tests:
+          - relationships:
+              to: ref('stg_customers')
+              field: customer_id
+              severity: warn
+      - name: revenue
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0" 
+      - name: discount
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0" 
+      
+
+  # --- ORDER ITEMS ---
+  - name: stg_order_items
+    columns:
+      - name: order_item_id
+        tests:
+          - unique
+          - not_null
+      - name: order_id
+        tests:
+          - relationships:
+              to: ref('stg_orders')
+              field: order_id
+              severity: warn
+      - name: unit_price
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0" 
+      - name: quantity
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
