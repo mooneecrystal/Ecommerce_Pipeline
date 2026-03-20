@@ -7,7 +7,7 @@ Hello, this is a tutorial project illustrating the pipeline for E-commerce data 
 Step-by-step guide is in the **SETUP.md** file, though I cannot go into all the details so it's better to have a chatbot to assist you to walkthrough.<br/>
 The initial requirements below is written by Claude, which I will change it on the fly to adapt with the reality need.
 
-# Demo DE Project: E-commerce Sales Data Warehouse
+# E-commerce Sales Data Warehouse reqirements
 ### Business Context
 Build a dimensional data warehouse for e-commerce sales analysis. Transform transactional data into star schema for business intelligence. This demonstrates: data modeling, dimensional design, incremental loading, and analytics-ready data structures.
 
