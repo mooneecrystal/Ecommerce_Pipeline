@@ -1,4 +1,4 @@
-Hello, this is a tutorial project illustrating the pipeline for E-commerce data processing, it uses Airflow to orchestrating the data flow:
+Hello, this project illustrating the pipeline for E-commerce data processing, it uses Airflow to orchestrating the data flow:
 - Ingest the historical and new daily data from MinIO S3
 - Push the data to Snowflake
 - Use DBT to Clean and Transform data
